@@ -15,7 +15,7 @@ class ParagraphBleedAdjuster private constructor(aztecText: AztecText) : TextWat
     private val aztecTextRef: WeakReference<AztecText?> = WeakReference(aztecText)
 
     override fun beforeTextChanged(s: CharSequence, start: Int, before: Int, after: Int) {
-        if (aztecTextRef.get()?.isTextChangedListenerDisabled() ?: true) {
+        if (aztecTextRef.get()?.isTextChangedListenerDisabled() != false) {
             return
         }
 

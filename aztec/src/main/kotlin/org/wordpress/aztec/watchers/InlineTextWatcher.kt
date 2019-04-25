@@ -31,14 +31,14 @@ class InlineTextWatcher(var inlineFormatter: InlineFormatter, aztecText: AztecTe
     private var textChangedEventDetails = TextChangedEvent("", 0, 0, 0)
 
     override fun beforeTextChanged(text: CharSequence, start: Int, count: Int, after: Int) {
-        if (aztecTextRef.get()?.isTextChangedListenerDisabled() ?: true) {
+        if (aztecTextRef.get()?.isTextChangedListenerDisabled() != false) {
             return
         }
         textChangedEventDetails = TextChangedEvent(text.toString())
     }
 
     override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
-        if (aztecTextRef.get()?.isTextChangedListenerDisabled() ?: true) {
+        if (aztecTextRef.get()?.isTextChangedListenerDisabled() != false) {
             return
         }
 

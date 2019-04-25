@@ -17,7 +17,7 @@ class TextDeleter private constructor(aztecText: AztecText) : TextWatcher {
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(text: Editable) {
-        if (aztecTextRef.get()?.isTextChangedListenerDisabled() ?: true) {
+        if (aztecTextRef.get()?.isTextChangedListenerDisabled() != false) {
             return
         }
 

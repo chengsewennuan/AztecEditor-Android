@@ -19,7 +19,6 @@
 package org.wordpress.aztec
 
 import android.content.Context
-import android.support.v4.text.TextDirectionHeuristicsCompat
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
@@ -28,6 +27,7 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.CharacterStyle
 import android.text.style.ForegroundColorSpan
+import androidx.core.text.TextDirectionHeuristicsCompat
 import org.wordpress.aztec.extensions.toCssString
 import org.wordpress.aztec.plugins.IAztecPlugin
 import org.wordpress.aztec.plugins.html2visual.ISpanPostprocessor

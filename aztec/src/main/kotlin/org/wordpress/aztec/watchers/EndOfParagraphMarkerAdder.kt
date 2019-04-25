@@ -34,19 +34,19 @@ class EndOfParagraphMarkerAdder(aztecText: AztecText, val verticalParagraphMargi
             val inputStart = textChangedEventDetails.inputStart
             val inputEnd = textChangedEventDetails.inputEnd
 
-            if (paragraphMarkerCanBeApplied(aztecText.text)) {
-                aztecText.text.setSpan(EndOfParagraphMarker(verticalParagraphMargin), inputStart, inputEnd,
+            if (paragraphMarkerCanBeApplied(aztecText.text!!)) {
+                aztecText.text!!.setSpan(EndOfParagraphMarker(verticalParagraphMargin), inputStart, inputEnd,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 // if we added a newline inside a paragraph, we should split it up into 2
-                val paragraphs = aztecText.text.getSpans(inputStart, inputEnd, ParagraphSpan::class.java)
+                val paragraphs = aztecText.text!!.getSpans(inputStart, inputEnd, ParagraphSpan::class.java)
                 if (paragraphs.isNotEmpty()) {
                     val paragraph = paragraphs.first()
-                    val paragraphEnd = aztecText.text.getSpanEnd(paragraph)
+                    val paragraphEnd = aztecText.text!!.getSpanEnd(paragraph)
                     if (paragraphEnd > inputEnd) {
-                        val paragraphStart = aztecText.text.getSpanStart(paragraph)
-                        val paragraphFlags = aztecText.text.getSpanFlags(paragraph)
-                        aztecText.text.setSpan(paragraph, paragraphStart, inputEnd, paragraphFlags)
+                        val paragraphStart = aztecText.text!!.getSpanStart(paragraph)
+                        val paragraphFlags = aztecText.text!!.getSpanFlags(paragraph)
+                        aztecText.text!!.setSpan(paragraph, paragraphStart, inputEnd, paragraphFlags)
                     }
                 }
             }

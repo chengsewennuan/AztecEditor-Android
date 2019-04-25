@@ -37,28 +37,28 @@ class FullWidthImageElementWatcher(aztecText: AztecText) : TextWatcher {
     private fun normalizeEditingAroundImageSpans(count: Int, start: Int) {
         val aztecText = aztecTextRef.get()
         if (aztecText != null && !aztecText.isTextChangedListenerDisabled() &&
-                aztecText.text.getSpans(0, 0, FullWidthImageProcessingMarker::class.java).isEmpty()) {
+                aztecText.text!!.getSpans(0, 0, FullWidthImageProcessingMarker::class.java).isEmpty()) {
 
             val end = start + count
-            var lines = aztecText.text.getSpans(start, end, IAztecFullWidthImageSpan::class.java)
+            var lines = aztecText.text!!.getSpans(start, end, IAztecFullWidthImageSpan::class.java)
 
             // necessary as spans starting at the `start` and ending at the `end` are not included in the list above
-            lines += aztecText.text.getSpans(start, start, IAztecFullWidthImageSpan::class.java)
-            lines += aztecText.text.getSpans(end, end, IAztecFullWidthImageSpan::class.java)
+            lines += aztecText.text!!.getSpans(start, start, IAztecFullWidthImageSpan::class.java)
+            lines += aztecText.text!!.getSpans(end, end, IAztecFullWidthImageSpan::class.java)
 
             lines.distinct().forEach {
-                val wrapper = SpanWrapper<IAztecFullWidthImageSpan>(aztecText.text, it)
+                val wrapper = SpanWrapper<IAztecFullWidthImageSpan>(aztecText.text!!, it)
 
                 // do not process images that were removed
                 if (wrapper.start == -1) {
                     return@forEach
                 }
 
-                val mustFixSpanStart = wrapper.start > 0 && aztecText.text[wrapper.start - 1] != Constants.NEWLINE
-                val mustFixSpanEnd = wrapper.end < aztecText.length() && aztecText.text[wrapper.end] != Constants.NEWLINE
+                val mustFixSpanStart = wrapper.start > 0 && aztecText.text!![wrapper.start - 1] != Constants.NEWLINE
+                val mustFixSpanEnd = wrapper.end < aztecText.length() && aztecText.text!![wrapper.end] != Constants.NEWLINE
 
                 val marker = FullWidthImageProcessingMarker()
-                aztecText.text.setSpan(marker, 0, 0, Spanned.SPAN_MARK_MARK)
+                aztecText.text!!.setSpan(marker, 0, 0, Spanned.SPAN_MARK_MARK)
 
                 if (mustFixSpanStart) {
                     // if characters added, insert a newline before the line
@@ -69,8 +69,8 @@ class FullWidthImageElementWatcher(aztecText: AztecText) : TextWatcher {
                     } else {
                         // if newline deleted, add it back and delete a character before it
                         if (deletedNewline) {
-                            aztecText.text.delete(spanStart - 1, spanStart)
-                            if (spanStart > 1 && aztecText.text[spanStart - 2] != Constants.NEWLINE) {
+                            aztecText.text!!.delete(spanStart - 1, spanStart)
+                            if (spanStart > 1 && aztecText.text!![spanStart - 2] != Constants.NEWLINE) {
                                 insertVisualNewline(spanStart - 1)
                             }
                             aztecText.setSelection(spanStart - 1)
@@ -88,11 +88,11 @@ class FullWidthImageElementWatcher(aztecText: AztecText) : TextWatcher {
                         insertVisualNewline(wrapper.end)
                     } else {
                         // if text deleted, remove the line
-                        aztecText.text.delete(wrapper.start, wrapper.end)
+                        aztecText.text!!.delete(wrapper.start, wrapper.end)
                     }
                 }
 
-                aztecText.text.removeSpan(marker)
+                aztecText.text!!.removeSpan(marker)
             }
         }
     }

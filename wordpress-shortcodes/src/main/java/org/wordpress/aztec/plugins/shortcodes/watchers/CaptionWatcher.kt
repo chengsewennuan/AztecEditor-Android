@@ -13,7 +13,7 @@ class CaptionWatcher(private val aztecText: AztecText) : BlockElementWatcher(azt
         super.onTextChanged(s, start, before, count)
 
         if (count > 0 && start + count < s.length && s[start + count] == Constants.IMG_CHAR) {
-            val spans = SpanWrapper.getSpans<CaptionShortcodeSpan>(aztecText.text, start + count, start + count,
+            val spans = SpanWrapper.getSpans(aztecText.text!!, start + count, start + count,
                     CaptionShortcodeSpan::class.java)
             spans.forEach {
 
@@ -24,44 +24,44 @@ class CaptionWatcher(private val aztecText: AztecText) : BlockElementWatcher(azt
                 }
             }
         } else if (count > 0) {
-            val spans = SpanWrapper.getSpans<CaptionShortcodeSpan>(aztecText.text, start, start, CaptionShortcodeSpan::class.java)
+            val spans = SpanWrapper.getSpans(aztecText.text!!, start, start, CaptionShortcodeSpan::class.java)
             spans.forEach {
 
                 // if text is added right after an image, move it below the caption
                 if (start > 0 && s[start - 1] == Constants.IMG_CHAR && s[start] != Constants.NEWLINE) {
                     val newText = "" + s.subSequence(start, start + count)
                     aztecText.disableTextChangedListener()
-                    aztecText.text.insert(it.end, Constants.NEWLINE_STRING)
-                    aztecText.text.delete(start, start + count)
-                    aztecText.text.insert(it.end, newText)
+                    aztecText.text!!.insert(it.end, Constants.NEWLINE_STRING)
+                    aztecText.text!!.delete(start, start + count)
+                    aztecText.text!!.insert(it.end, newText)
                     aztecText.enableTextChangedListener()
                     aztecText.setSelection(it.end + newText.length)
                 }
             }
         }
 
-        val spans = SpanWrapper.getSpans<CaptionShortcodeSpan>(aztecText.text, 0, aztecText.length(),
+        val spans = SpanWrapper.getSpans<CaptionShortcodeSpan>(aztecText.text!!, 0, aztecText.length(),
                 CaptionShortcodeSpan::class.java)
         spans.forEach {
 
             // if a caption's beginning is behind an image, align it with the image beginning
-            if (it.start < aztecText.length() && aztecText.text[it.start] != Constants.IMG_CHAR) {
-                if (it.start > 1 && aztecText.text[it.start - 1] == Constants.NEWLINE &&
-                        aztecText.text[it.start - 2] == Constants.IMG_CHAR) {
+            if (it.start < aztecText.length() && aztecText.text!![it.start] != Constants.IMG_CHAR) {
+                if (it.start > 1 && aztecText.text!![it.start - 1] == Constants.NEWLINE &&
+                        aztecText.text!![it.start - 2] == Constants.IMG_CHAR) {
                     it.flags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     it.start -= 2
                 }
             }
 
             // remove captions that are not attached to any image
-            if (it.start < aztecText.length() && aztecText.text[it.start] != Constants.IMG_CHAR) {
+            if (it.start < aztecText.length() && aztecText.text!![it.start] != Constants.IMG_CHAR) {
                 val spanStart = it.start
                 var spanEnd = it.end
                 if (spanEnd < aztecText.length()) {
                     spanEnd = it.end - 1
                 }
                 it.remove()
-                aztecText.text.delete(spanStart, spanEnd)
+                aztecText.text!!.delete(spanStart, spanEnd)
                 return@forEach
             }
 
@@ -73,12 +73,12 @@ class CaptionWatcher(private val aztecText: AztecText) : BlockElementWatcher(azt
 
             // if a caption's ending doesn't align with an ending of a line immediately following an image, align them
             // if the last line is the end of the text, make the caption end there
-            val imgCharPosition = aztecText.text.indexOf(Constants.IMG_CHAR, it.start)
-            val secondNewline = aztecText.text.indexOf(Constants.NEWLINE, imgCharPosition + 2)
+            val imgCharPosition = aztecText.text!!.indexOf(Constants.IMG_CHAR, it.start)
+            val secondNewline = aztecText.text!!.indexOf(Constants.NEWLINE, imgCharPosition + 2)
             val correctEnding = if (secondNewline != -1) secondNewline + 1 else aztecText.length()
 
             if (imgCharPosition != -1 && it.end != correctEnding &&
-                    it.start < aztecText.length() && aztecText.text[it.start] == Constants.IMG_CHAR) {
+                    it.start < aztecText.length() && aztecText.text!![it.start] == Constants.IMG_CHAR) {
                 it.flags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 it.end = correctEnding
             }

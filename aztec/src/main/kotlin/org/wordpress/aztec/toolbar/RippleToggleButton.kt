@@ -3,13 +3,13 @@ package org.wordpress.aztec.toolbar
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
 import org.wordpress.aztec.R
 
 class RippleToggleButton : ToggleButton, OnLongClickListener {
@@ -102,9 +102,9 @@ class RippleToggleButton : ToggleButton, OnLongClickListener {
     }
 
     companion object {
-        private val FRAME_RATE = 10
-        private val DURATION = 250
-        private val FILL_INITIAL_OPACITY = 200
-        private val STROKE_INITIAL_OPACITY = 255
+        private const val FRAME_RATE = 10
+        private const val DURATION = 250
+        private const val FILL_INITIAL_OPACITY = 200
+        private const val STROKE_INITIAL_OPACITY = 255
     }
 }

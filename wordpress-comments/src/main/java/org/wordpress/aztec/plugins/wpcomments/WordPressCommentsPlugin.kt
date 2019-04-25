@@ -1,9 +1,9 @@
 package org.wordpress.aztec.plugins.wpcomments
 
-import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.CharacterStyle
+import androidx.core.content.ContextCompat
 import org.wordpress.aztec.AztecText
 import org.wordpress.aztec.Constants
 import org.wordpress.aztec.plugins.html2visual.IHtmlCommentHandler

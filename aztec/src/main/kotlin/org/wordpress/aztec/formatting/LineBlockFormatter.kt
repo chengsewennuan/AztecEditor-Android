@@ -1,10 +1,10 @@
 package org.wordpress.aztec.formatting
 
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
+import androidx.core.content.ContextCompat
 import org.wordpress.aztec.AztecAttributes
 import org.wordpress.aztec.AztecText
 import org.wordpress.aztec.AztecText.OnImageTappedListener
@@ -31,7 +31,7 @@ class LineBlockFormatter(editor: AztecText) : AztecFormatter(editor) {
         val list = ArrayList<Int>()
 
         for (i in lines.indices) {
-            val lineStart = (0..i - 1).sumBy { lines[it].length + 1 }
+            val lineStart = (0 until i).sumBy { lines[it].length + 1 }
             val lineEnd = lineStart + lines[i].length
 
             if (lineStart >= lineEnd) {

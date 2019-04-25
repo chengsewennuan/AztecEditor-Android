@@ -5,9 +5,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v4.text.TextUtilsCompat
-import android.support.v4.view.ViewCompat
-import android.support.v7.app.AlertDialog
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -23,6 +20,9 @@ import android.widget.PopupMenu
 import android.widget.PopupMenu.OnMenuItemClickListener
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.appcompat.app.AlertDialog
+import androidx.core.text.TextUtilsCompat
+import androidx.core.view.ViewCompat
 import org.wordpress.android.util.AppLog
 import org.wordpress.aztec.AztecText
 import org.wordpress.aztec.AztecText.EditorHasChanges.NO_CHANGES
@@ -42,8 +42,11 @@ import java.util.Locale
  * Supports RTL layout direction on API 19+
  */
 class AztecToolbar : FrameLayout, IAztecToolbar, OnMenuItemClickListener {
-    val RETAINED_EDITOR_HTML_PARSED_SHA256_KEY = "RETAINED_EDITOR_HTML_PARSED_SHA256_KEY"
-    val RETAINED_SOURCE_HTML_PARSED_SHA256_KEY = "RETAINED_SOURCE_HTML_PARSED_SHA256_KEY"
+    companion object {
+        const val RETAINED_EDITOR_HTML_PARSED_SHA256_KEY = "RETAINED_EDITOR_HTML_PARSED_SHA256_KEY"
+        const val RETAINED_SOURCE_HTML_PARSED_SHA256_KEY = "RETAINED_SOURCE_HTML_PARSED_SHA256_KEY"
+    }
+
 
     private var aztecToolbarListener: IAztecToolbarClickListener? = null
     private var editor: AztecText? = null
@@ -57,8 +60,8 @@ class AztecToolbar : FrameLayout, IAztecToolbar, OnMenuItemClickListener {
     private var isMediaToolbarVisible: Boolean = false
     private var isMediaModeEnabled: Boolean = false
 
-    var editorContentParsedSHA256LastSwitch: ByteArray = ByteArray(0)
-    var sourceContentParsedSHA256LastSwitch: ByteArray = ByteArray(0)
+    private var editorContentParsedSHA256LastSwitch: ByteArray = ByteArray(0)
+    private var sourceContentParsedSHA256LastSwitch: ByteArray = ByteArray(0)
 
     private lateinit var toolbarScrolView: HorizontalScrollView
     private lateinit var buttonEllipsisCollapsed: RippleToggleButton

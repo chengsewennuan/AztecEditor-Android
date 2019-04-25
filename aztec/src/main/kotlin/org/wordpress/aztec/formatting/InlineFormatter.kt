@@ -411,7 +411,7 @@ class InlineFormatter(editor: AztecText, val codeStyle: CodeStyle) : AztecFormat
                     editableText.removeSpan(it)
                 }
             }
-        } else if (editor.length() == 1 && editor.text[0] == Constants.END_OF_BUFFER_MARKER) {
+        } else if (editor.length() == 1 && editor.text!![0] == Constants.END_OF_BUFFER_MARKER) {
             editableText.getSpans(0, 1, IAztecInlineSpan::class.java).forEach {
                 if (editableText.getSpanStart(it) == 1 && editableText.getSpanEnd(it) == 1) {
                     editableText.removeSpan(it)

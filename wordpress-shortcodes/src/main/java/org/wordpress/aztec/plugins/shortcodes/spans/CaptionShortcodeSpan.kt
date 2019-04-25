@@ -23,43 +23,43 @@ class CaptionShortcodeSpan @JvmOverloads constructor(override var attributes: Az
     var caption: String
         get() {
             aztecText?.let {
-                val wrapper = SpanWrapper<CaptionShortcodeSpan>(aztecText.text, this)
+                val wrapper = SpanWrapper(aztecText.text!!, this)
                 val start = getCaptionStart(wrapper)
                 val end = getCaptionEnd(wrapper, aztecText)
-                return aztecText.text.subSequence(start, end).toString()
+                return aztecText.text!!.subSequence(start, end).toString()
             }
             return ""
         }
         set(value) {
             aztecText?.let {
-                val wrapper = SpanWrapper<CaptionShortcodeSpan>(aztecText.text, this)
+                val wrapper = SpanWrapper(aztecText.text!!, this)
                 val start = getCaptionStart(wrapper)
                 val end = getCaptionEnd(wrapper, aztecText)
 
                 // a condition start == end is true if the caption is empty
                 if (start == end) {
                     val newValue = Constants.NEWLINE_STRING + value
-                    if (end < aztecText.length() && aztecText.text[end] != Constants.NEWLINE) {
-                        aztecText.text.insert(end, Constants.NEWLINE_STRING)
+                    if (end < aztecText.length() && aztecText.text!![end] != Constants.NEWLINE) {
+                        aztecText.text!!.insert(end, Constants.NEWLINE_STRING)
                     }
-                    aztecText.text.insert(end, newValue)
+                    aztecText.text!!.insert(end, newValue)
 
                     val newEnd = Math.min(end + newValue.length + 1, aztecText.length())
-                    aztecText.text.setSpan(this, wrapper.start, newEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    aztecText.text!!.setSpan(this, wrapper.start, newEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 } else {
-                    aztecText.text.replace(start, end, value)
+                    aztecText.text!!.replace(start, end, value)
                 }
             }
         }
 
     fun remove() {
         aztecText?.let {
-            val wrapper = SpanWrapper<CaptionShortcodeSpan>(aztecText.text, this)
+            val wrapper = SpanWrapper(aztecText.text!!, this)
             val start = getCaptionStart(wrapper) - 1 // there is always a newline, we want to remove it
             val end = getCaptionEnd(wrapper, aztecText)
 
-            aztecText.text.delete(start, end)
-            aztecText.text.removeSpan(this)
+            aztecText.text!!.delete(start, end)
+            aztecText.text!!.removeSpan(this)
         }
     }
 
@@ -80,7 +80,7 @@ class CaptionShortcodeSpan @JvmOverloads constructor(override var attributes: Az
         // return the true end without the newline
         val start = getCaptionStart(wrapper)
         var end = Math.max(start, wrapper.end)
-        if (end > start && aztecText.text[end - 1] == Constants.NEWLINE) {
+        if (end > start && aztecText.text!![end - 1] == Constants.NEWLINE) {
             end--
         }
         return end

@@ -21,7 +21,7 @@ class AztecLog {
 
         fun logContentDetails(aztecText: AztecText) {
             AppLog.d(AppLog.T.EDITOR, "Below are the details of the content in the editor:")
-            logContentDetails(aztecText.text)
+            logContentDetails(aztecText.text!!)
         }
 
         fun logContentDetails(text: Spanned) {

@@ -23,9 +23,9 @@ package org.wordpress.aztec
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.Spanned
+import androidx.core.content.ContextCompat
 import org.wordpress.aztec.plugins.IAztecPlugin
 import org.wordpress.aztec.plugins.html2visual.IHtmlTagHandler
 import org.wordpress.aztec.spans.AztecAudioSpan

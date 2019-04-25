@@ -31,11 +31,6 @@ import android.os.Bundle
 import android.os.Looper
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.annotation.DrawableRes
-import android.support.graphics.drawable.VectorDrawableCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatEditText
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -56,6 +51,11 @@ import android.view.inputmethod.BaseInputConnection
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -481,9 +481,9 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
                     temp = SpannableStringBuilder(source).append(dest.subSequence(dend, dend+1))
 
                     // delete the original AztecImageSpan
-                    text.delete(dend, dend+1)
+                    text?.delete(dend, dend+1)
                     // now insert both the new insertion _and_ the original AztecImageSpan
-                    text.insert(dend, temp)
+                    text?.insert(dend, temp)
                     temp = "" // discard the original source parameter as an ouput from this InputFilter
 
                     // re-enable MediaDeleted listener
@@ -549,7 +549,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
             }
 
             // required to clear the toolbar style when using hardware keyboard
-            if (text.isEmpty()) {
+            if (text.isNullOrEmpty()) {
                 disableTextChangedListener()
                 setText("")
                 enableTextChangedListener()
@@ -697,9 +697,9 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
         if (isBlockEditorDialogVisible) {
             val retainedBlockHtmlIndex = customState.getInt(BLOCK_EDITOR_START_INDEX_KEY, -1)
             if (retainedBlockHtmlIndex != -1) {
-                val unknownSpan = text.getSpans(retainedBlockHtmlIndex, retainedBlockHtmlIndex + 1, UnknownHtmlSpan::class.java).firstOrNull()
+                val unknownSpan = text!!.getSpans(retainedBlockHtmlIndex, retainedBlockHtmlIndex + 1, UnknownHtmlSpan::class.java).firstOrNull()
                 if (unknownSpan != null) {
-                    val retainedBlockHtml = InstanceStateUtils.readAndPurgeTempInstance<String>(BLOCK_EDITOR_HTML_KEY, "",
+                    val retainedBlockHtml = InstanceStateUtils.readAndPurgeTempInstance(BLOCK_EDITOR_HTML_KEY, "",
                             savedState.state)
                     showBlockEditorDialog(unknownSpan, retainedBlockHtml)
                 }
@@ -874,7 +874,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
 
         if (length() != 0) {
             // if the text end has the marker, let's make sure the cursor never includes it or surpasses it
-            if ((selStart == length() || selEnd == length()) && text[length() - 1] == Constants.END_OF_BUFFER_MARKER) {
+            if ((selStart == length() || selEnd == length()) && text!![length() - 1] == Constants.END_OF_BUFFER_MARKER) {
                 var start = selStart
                 var end = selEnd
 
@@ -892,7 +892,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
         }
 
         // do not update toolbar or selected styles when we removed the last character in editor
-        if (!isLeadingStyleRemoved && length() == 1 && text[0] == Constants.END_OF_BUFFER_MARKER) {
+        if (!isLeadingStyleRemoved && length() == 1 && text!![0] == Constants.END_OF_BUFFER_MARKER) {
             return
         }
 
@@ -956,7 +956,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     fun isEmpty(): Boolean {
-        return text.isEmpty()
+        return text!!.isEmpty()
     }
 
     fun formattingIsApplied(): Boolean {
@@ -1165,7 +1165,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     private fun loadImages() {
-        val spans = this.text.getSpans(0, text.length, AztecImageSpan::class.java)
+        val spans = this.text!!.getSpans(0, text!!.length, AztecImageSpan::class.java)
         val loadingDrawable = AztecText.getPlaceholderDrawableFromResID(context, drawableLoading, maxImagesWidth)
 
         // Make sure to keep a reference to the maxWidth, otherwise in the Callbacks there is
@@ -1199,7 +1199,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     private fun loadVideos() {
-        val spans = this.text.getSpans(0, text.length, AztecVideoSpan::class.java)
+        val spans = this.text!!.getSpans(0, text!!.length, AztecVideoSpan::class.java)
         val loadingDrawable = AztecText.getPlaceholderDrawableFromResID(context, drawableLoading, maxImagesWidth)
         val videoListenerRef = this.onVideoInfoRequestedListener
 
@@ -1460,7 +1460,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     // logic party copied from TextView
     override fun onTextContextMenuItem(id: Int): Boolean {
         var min = 0
-        var max = text.length
+        var max = text!!.length
 
         if (isFocused) {
             min = Math.max(0, Math.min(selectionStart, selectionEnd))
@@ -1470,15 +1470,15 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
         var clipboardIdentifier = resources.getIdentifier("android:id/clipboard", "id", context.packageName)
 
         when (id) {
-            android.R.id.paste -> paste(text, min, max)
-            android.R.id.pasteAsPlainText -> paste(text, min, max, true)
+            android.R.id.paste -> paste(text!!, min, max)
+            android.R.id.pasteAsPlainText -> paste(text!!, min, max, true)
             android.R.id.copy -> {
-                copy(text, min, max)
+                copy(text!!, min, max)
                 setSelection(max) // dismiss the selection to make the action menu hide
             }
             android.R.id.cut -> {
-                copy(text, min, max)
-                text.delete(min, max) // this will hide text action menu
+                copy(text!!, min, max)
+                text!!.delete(min, max) // this will hide text action menu
 
                 // if we are cutting text from the beginning of editor, remove leading inline style
                 if (min == 0) {
@@ -1543,7 +1543,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
 
             disableTextChangedListener()
 
-            val length = text.length
+            val length = text!!.length
             if (min == 0 &&
                     (max == length || (length == 1 && text.toString() == Constants.END_OF_BUFFER_MARKER_STRING))) {
                 setText(Constants.REPLACEMENT_MARKER_STRING)
@@ -1679,8 +1679,8 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
         source.displayStyledAndFormattedHtml(editHtml)
         builder.setView(dialogView)
 
-        builder.setPositiveButton(R.string.block_editor_dialog_button_save, { _, _ ->
-            val spanStart = text.getSpanStart(unknownHtmlSpan)
+        builder.setPositiveButton(R.string.block_editor_dialog_button_save) { _, _ ->
+            val spanStart = text!!.getSpanStart(unknownHtmlSpan)
 
             val textBuilder = SpannableStringBuilder()
             textBuilder.append(AztecParser(plugins).fromHtml(source.getPureHtml(), context).trim())
@@ -1688,13 +1688,13 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
 
             disableTextChangedListener()
 
-            text.removeSpan(unknownHtmlSpan)
-            val unknownClickSpan = text.getSpans(spanStart, spanStart + 1, UnknownClickableSpan::class.java).firstOrNull()
+            text!!.removeSpan(unknownHtmlSpan)
+            val unknownClickSpan = text!!.getSpans(spanStart, spanStart + 1, UnknownClickableSpan::class.java).firstOrNull()
             if (unknownClickSpan != null) {
-                text.removeSpan(unknownClickSpan)
+                text!!.removeSpan(unknownClickSpan)
             }
 
-            text.replace(spanStart, spanStart + 1, textBuilder)
+            text!!.replace(spanStart, spanStart + 1, textBuilder)
 
             val newUnknownSpan = textBuilder.getSpans(0, textBuilder.length, UnknownHtmlSpan::class.java).firstOrNull()
             if (newUnknownSpan != null) {
@@ -1703,14 +1703,14 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
 
             enableTextChangedListener()
 
-            inlineFormatter.joinStyleSpans(0, text.length)
-        })
+            inlineFormatter.joinStyleSpans(0, text!!.length)
+        }
 
-        builder.setNegativeButton(R.string.block_editor_dialog_button_cancel, { dialogInterface, _ ->
+        builder.setNegativeButton(R.string.block_editor_dialog_button_cancel) { dialogInterface, _ ->
             dialogInterface.dismiss()
-        })
+        }
 
-        unknownBlockSpanStart = text.getSpanStart(unknownHtmlSpan)
+        unknownBlockSpanStart = text!!.getSpanStart(unknownHtmlSpan)
         blockEditorDialog = builder.create()
         blockEditorDialog!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         blockEditorDialog!!.show()
@@ -1723,7 +1723,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
         // Remove the end-of-buffer character if the text is empty (so hint can become visible)
         if (text.toString() == Constants.END_OF_BUFFER_MARKER.toString()) {
             disableTextChangedListener()
-            text.delete(0, 1)
+            text!!.delete(0, 1)
             enableTextChangedListener()
         }
         onSelectionChanged(0, 0)
@@ -1738,20 +1738,20 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     fun removeMedia(attributePredicate: AttributePredicate) {
-        text.getSpans(0, text.length, AztecMediaSpan::class.java)
+        text!!.getSpans(0, text!!.length, AztecMediaSpan::class.java)
                 .filter {
                     attributePredicate.matches(it.attributes)
                 }
                 .forEach {
-                    val start = text.getSpanStart(it)
-                    val end = text.getSpanEnd(it)
+                    val start = text!!.getSpanStart(it)
+                    val end = text!!.getSpanEnd(it)
 
-                    val clickableSpan = text.getSpans(start, end, AztecMediaClickableSpan::class.java).firstOrNull()
+                    val clickableSpan = text!!.getSpans(start, end, AztecMediaClickableSpan::class.java).firstOrNull()
 
-                    text.removeSpan(clickableSpan)
-                    text.removeSpan(it)
+                    text!!.removeSpan(clickableSpan)
+                    text!!.removeSpan(it)
 
-                    text.delete(start, end)
+                    text!!.delete(start, end)
                 }
     }
 
@@ -1763,23 +1763,23 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     fun updateElementAttributes(attributePredicate: AttributePredicate, attrs: AztecAttributes) {
-        text.getSpans(0, text.length, IAztecAttributedSpan::class.java).firstOrNull {
+        text!!.getSpans(0, text!!.length, IAztecAttributedSpan::class.java).firstOrNull {
             attributePredicate.matches(it.attributes)
         }?.attributes = attrs
     }
 
     fun resetAttributedMediaSpan(attributePredicate: AttributePredicate) {
-        text.getSpans(0, text.length, AztecMediaSpan::class.java)
+        text!!.getSpans(0, text!!.length, AztecMediaSpan::class.java)
                 .filter {
-                    attributePredicate.matches(it.attributes) && text.getSpanStart(it) != -1 && text.getSpanEnd(it) != -1
+                    attributePredicate.matches(it.attributes) && text!!.getSpanStart(it) != -1 && text!!.getSpanEnd(it) != -1
                 }
                 .forEach {
-                    editableText.setSpan(it, text.getSpanStart(it), text.getSpanEnd(it), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    editableText.setSpan(it, text!!.getSpanStart(it), text!!.getSpanEnd(it), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
     }
 
     fun setOverlayLevel(attributePredicate: AttributePredicate, index: Int, level: Int) {
-        text.getSpans(0, text.length, AztecMediaSpan::class.java)
+        text!!.getSpans(0, text!!.length, AztecMediaSpan::class.java)
                 .filter {
                     attributePredicate.matches(it.attributes)
                 }
@@ -1789,7 +1789,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     fun setOverlay(attributePredicate: AttributePredicate, index: Int, overlay: Drawable?, gravity: Int) {
-        text.getSpans(0, text.length, AztecMediaSpan::class.java)
+        text!!.getSpans(0, text!!.length, AztecMediaSpan::class.java)
                 .filter {
                     attributePredicate.matches(it.attributes)
                 }
@@ -1802,7 +1802,7 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     fun clearOverlays(attributePredicate: AttributePredicate) {
-        text.getSpans(0, text.length, AztecMediaSpan::class.java)
+        text!!.getSpans(0, text!!.length, AztecMediaSpan::class.java)
                 .filter {
                     attributePredicate.matches(it.attributes)
                 }
@@ -1823,8 +1823,8 @@ open class AztecText : AppCompatEditText, TextWatcher, UnknownHtmlSpan.OnUnknown
     }
 
     fun getAllElementAttributes(attributePredicate: AttributePredicate): List<AztecAttributes> {
-        return text
-                .getSpans(0, text.length, IAztecAttributedSpan::class.java)
+        return text!!
+                .getSpans(0, text!!.length, IAztecAttributedSpan::class.java)
                 .filter {
                     attributePredicate.matches(it.attributes)
                 }

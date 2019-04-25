@@ -2,8 +2,8 @@ package org.wordpress.aztec.spans
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
 import android.view.Gravity
+import androidx.core.content.ContextCompat
 import org.wordpress.aztec.AztecAttributes
 import org.wordpress.aztec.AztecText
 

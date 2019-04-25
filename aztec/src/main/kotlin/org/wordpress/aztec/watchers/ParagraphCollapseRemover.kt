@@ -15,7 +15,7 @@ class ParagraphCollapseRemover private constructor(aztecText: AztecText) : TextW
     private val aztecTextRef: WeakReference<AztecText?> = WeakReference(aztecText)
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-        if (aztecTextRef.get()?.isTextChangedListenerDisabled() ?: true) {
+        if (aztecTextRef.get()?.isTextChangedListenerDisabled() != false) {
             return
         }
 

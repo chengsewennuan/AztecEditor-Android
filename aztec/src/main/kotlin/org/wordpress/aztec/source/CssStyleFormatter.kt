@@ -1,10 +1,10 @@
 package org.wordpress.aztec.source
 
-import android.support.v4.text.TextDirectionHeuristicsCompat
 import android.text.Editable
 import android.text.Layout
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
+import androidx.core.text.TextDirectionHeuristicsCompat
 import org.wordpress.aztec.AztecAttributes
 import org.wordpress.aztec.spans.IAztecAttributedSpan
 import org.wordpress.aztec.spans.IAztecParagraphStyle
@@ -21,10 +21,10 @@ class CssStyleFormatter {
 
     companion object {
 
-        val STYLE_ATTRIBUTE = "style"
-        val CSS_TEXT_DECORATION_ATTRIBUTE = "text-decoration"
-        val CSS_TEXT_ALIGN_ATTRIBUTE = "text-align"
-        val CSS_COLOR_ATTRIBUTE = "color"
+        const val STYLE_ATTRIBUTE = "style"
+        const val CSS_TEXT_DECORATION_ATTRIBUTE = "text-decoration"
+        const val CSS_TEXT_ALIGN_ATTRIBUTE = "text-align"
+        const val CSS_COLOR_ATTRIBUTE = "color"
 
         /**
          * Check the provided [attributedSpan] for the *style* attribute. If found, parse out the

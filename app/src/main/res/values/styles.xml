@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="MainActivityTheme" parent="@style/Theme.AppCompat">
+    <style name="MainActivityTheme" parent="@style/Theme.MaterialComponents">
         <!-- DO NOTHING HERE -->
     </style>
 

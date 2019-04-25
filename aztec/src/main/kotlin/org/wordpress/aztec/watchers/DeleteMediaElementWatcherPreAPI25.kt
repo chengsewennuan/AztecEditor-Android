@@ -10,11 +10,11 @@ class DeleteMediaElementWatcherPreAPI25(aztecText: AztecText) : TextWatcher {
     private val aztecTextRef: WeakReference<AztecText?> = WeakReference(aztecText)
 
     override fun beforeTextChanged(text: CharSequence, start: Int, count: Int, after: Int) {
-        if (aztecTextRef.get()?.isTextChangedListenerDisabled() ?: true) {
+        if (aztecTextRef.get()?.isTextChangedListenerDisabled() != false) {
             return
         }
 
-        if (aztecTextRef.get()?.isMediaDeletedListenerDisabled() ?: true) {
+        if (aztecTextRef.get()?.isMediaDeletedListenerDisabled() != false) {
             return
         }
 

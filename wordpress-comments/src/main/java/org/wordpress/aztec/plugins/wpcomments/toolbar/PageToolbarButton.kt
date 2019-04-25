@@ -1,11 +1,11 @@
 package org.wordpress.aztec.plugins.wpcomments.toolbar
 
-import android.support.v4.content.ContextCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import org.wordpress.aztec.AztecText
 import org.wordpress.aztec.Constants
 import org.wordpress.aztec.plugins.IToolbarButton
